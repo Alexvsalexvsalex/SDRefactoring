@@ -20,32 +20,41 @@ public class QueryServlet extends HttpServlet {
         String command = request.getParameter("command");
 
         HtmlFormatter formatter = new HtmlFormatter();
-        if ("max".equals(command)) {
-            formatter.printlnToBody("<h1>Product with max price: </h1>");
-            List<Product> products = Database.executeQueryAndProcess(
-                    "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1",
-                    Decoders.PRODUCT_DECODER);
-            products.forEach(formatter::printlnToBody);
-        } else if ("min".equals(command)) {
-            formatter.printlnToBody("<h1>Product with min price: </h1>");
-            List<Product> products = Database.executeQueryAndProcess(
-                    "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1",
-                    Decoders.PRODUCT_DECODER);
-            products.forEach(formatter::printlnToBody);
-        } else if ("sum".equals(command)) {
-            formatter.printlnToBody("Summary price: ");
-            List<Integer> price = Database.executeQueryAndProcess(
-                    "SELECT SUM(price) FROM PRODUCT",
-                    Decoders.INTEGER_DECODER);
-            price.forEach(formatter::printlnToBody);
-        } else if ("count".equals(command)) {
-            formatter.printlnToBody("Number of products: ");
-            List<Integer> price = Database.executeQueryAndProcess(
-                    "SELECT COUNT(*) FROM PRODUCT",
-                    Decoders.INTEGER_DECODER);
-            price.forEach(formatter::printlnToBody);
-        } else {
-            formatter.printlnToBody("Unknown command: " + command);
+        switch (command) {
+            case "max": {
+                formatter.printlnToBody("<h1>Product with max price: </h1>");
+                List<Product> products = Database.executeQueryAndProcess(
+                        "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1",
+                        Decoders.PRODUCT_DECODER);
+                products.forEach(formatter::printlnToBody);
+                break;
+            }
+            case "min": {
+                formatter.printlnToBody("<h1>Product with min price: </h1>");
+                List<Product> products = Database.executeQueryAndProcess(
+                        "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1",
+                        Decoders.PRODUCT_DECODER);
+                products.forEach(formatter::printlnToBody);
+                break;
+            }
+            case "sum": {
+                formatter.printlnToBody("Summary price: ");
+                List<Integer> price = Database.executeQueryAndProcess(
+                        "SELECT SUM(price) FROM PRODUCT",
+                        Decoders.INTEGER_DECODER);
+                price.forEach(formatter::printlnToBody);
+                break;
+            }
+            case "count": {
+                formatter.printlnToBody("Number of products: ");
+                List<Integer> price = Database.executeQueryAndProcess(
+                        "SELECT COUNT(*) FROM PRODUCT",
+                        Decoders.INTEGER_DECODER);
+                price.forEach(formatter::printlnToBody);
+                break;
+            }
+            default:
+                formatter.printlnToBody("Unknown command: " + command);
         }
         formatter.writeToResponse(response);
         response.setStatus(HttpServletResponse.SC_OK);
