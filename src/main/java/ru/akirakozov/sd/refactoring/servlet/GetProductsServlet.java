@@ -18,7 +18,7 @@ public class GetProductsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter responseWriter = response.getWriter();
-        Database.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1", resultSet -> {
+        Database.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC", resultSet -> {
             responseWriter.println("<html><body>");
 
             try {
