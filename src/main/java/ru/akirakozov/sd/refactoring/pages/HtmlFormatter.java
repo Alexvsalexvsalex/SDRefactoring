@@ -1,5 +1,7 @@
 package ru.akirakozov.sd.refactoring.pages;
 
+import ru.akirakozov.sd.refactoring.domain.Product;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -17,6 +19,10 @@ public class HtmlFormatter {
 
     public <T> void printlnToBody(T s) {
         body += s.toString() + "\n";
+    }
+
+    public void printlnToBody(Product product) {
+        body += product.getName() + "\t" + product.getPrice() + "</br>";
     }
 
     public String getBodyBlock() {
