@@ -1,6 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.db.Database;
+import ru.akirakozov.sd.refactoring.pages.HtmlFormatter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +24,8 @@ public class AddProductServlet extends HttpServlet {
         Database.executeUpdate("INSERT INTO PRODUCT " +
                 "(NAME, PRICE) VALUES (\"" + name + "\"," + price + ")");
 
-        response.setContentType("text/html");
+        HtmlFormatter formatter = new HtmlFormatter();
+        formatter.writeToResponse(response);
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("OK");
     }
 }
