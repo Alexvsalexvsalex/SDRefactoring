@@ -1,15 +1,12 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
-import ru.akirakozov.sd.refactoring.db.Database;
-import ru.akirakozov.sd.refactoring.db.Decoders;
-import ru.akirakozov.sd.refactoring.domain.Product;
+import ru.akirakozov.sd.refactoring.db.Databases;
 import ru.akirakozov.sd.refactoring.pages.HtmlFormatter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author akirakozov
@@ -23,34 +20,22 @@ public class QueryServlet extends HttpServlet {
         switch (command) {
             case "max": {
                 formatter.printlnToBody("<h1>Product with max price: </h1>");
-                List<Product> products = Database.executeQueryAndProcess(
-                        "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1",
-                        Decoders.PRODUCT_DECODER);
-                products.forEach(formatter::printlnToBody);
+                formatter.printlnToBody(Databases.PRODUCT_DATABASE.getMaxPriceProduct());
                 break;
             }
             case "min": {
                 formatter.printlnToBody("<h1>Product with min price: </h1>");
-                List<Product> products = Database.executeQueryAndProcess(
-                        "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1",
-                        Decoders.PRODUCT_DECODER);
-                products.forEach(formatter::printlnToBody);
+                formatter.printlnToBody(Databases.PRODUCT_DATABASE.getMinPriceProduct());
                 break;
             }
             case "sum": {
                 formatter.printlnToBody("Summary price: ");
-                List<Integer> price = Database.executeQueryAndProcess(
-                        "SELECT SUM(price) FROM PRODUCT",
-                        Decoders.INTEGER_DECODER);
-                price.forEach(formatter::printlnToBody);
+                formatter.printlnToBody(Databases.PRODUCT_DATABASE.getSumPrice());
                 break;
             }
             case "count": {
                 formatter.printlnToBody("Number of products: ");
-                List<Integer> price = Database.executeQueryAndProcess(
-                        "SELECT COUNT(*) FROM PRODUCT",
-                        Decoders.INTEGER_DECODER);
-                price.forEach(formatter::printlnToBody);
+                formatter.printlnToBody(Databases.PRODUCT_DATABASE.countAll());
                 break;
             }
             default:
