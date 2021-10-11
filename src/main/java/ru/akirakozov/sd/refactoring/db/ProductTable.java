@@ -4,14 +4,21 @@ import ru.akirakozov.sd.refactoring.domain.Product;
 
 import java.util.List;
 
-public class ProductDatabase extends Table<Product> {
-    public ProductDatabase() {
-        super("PRODUCT",
-                "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                        " NAME           TEXT    NOT NULL, " +
-                        " PRICE          INT     NOT NULL)",
-                "(NAME, PRICE)",
-                Decoders.PRODUCT_DECODER);
+public class ProductTable extends Table<Product> {
+    public ProductTable(String file) {
+        super(file, "PRODUCT");
+    }
+
+    @Override
+    protected String getTableDesc() {
+        return "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                " NAME           TEXT    NOT NULL, " +
+                " PRICE          INT     NOT NULL)";
+    }
+
+    @Override
+    protected String getInsertTupleTemplate() {
+        return null;
     }
 
     @Override

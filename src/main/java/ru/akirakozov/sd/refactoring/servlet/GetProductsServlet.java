@@ -1,7 +1,6 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
-import ru.akirakozov.sd.refactoring.db.Databases;
-import ru.akirakozov.sd.refactoring.db.ProductDatabase;
+import ru.akirakozov.sd.refactoring.db.ProductTable;
 import ru.akirakozov.sd.refactoring.pages.HtmlFormatter;
 
 import javax.servlet.http.HttpServlet;
@@ -13,13 +12,17 @@ import java.io.IOException;
  * @author akirakozov
  */
 public class GetProductsServlet extends HttpServlet {
+    private final ProductTable table;
+
+    public GetProductsServlet(ProductTable table) {
+        this.table = table;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HtmlFormatter formatter = new HtmlFormatter();
 
-        Databases.PRODUCT_DATABASE
-                .selectAllOrderedByPriceDesc().forEach(formatter::printlnToBody);
+        table.selectAllOrderedByPriceDesc().forEach(formatter::printlnToBody);
 
         formatter.writeToResponse(response);
         response.setStatus(HttpServletResponse.SC_OK);

@@ -4,27 +4,27 @@ import java.util.List;
 
 public abstract class Table<T> {
     protected final String name;
-    protected final String tableDesc;
-    protected final String insertTuple;
-    protected final Decoder<T> objectDecoder;
+    private final Database database;
 
-    protected Table(String name, String tableDesc, String insertTuple, Decoder<T> objectDecoder) {
+    protected Table(String file, String name) {
+        this.database = new Database(file);
         this.name = name;
-        this.tableDesc = tableDesc;
-        this.insertTuple = insertTuple;
-        this.objectDecoder = objectDecoder;
     }
+
+    protected abstract String getTableDesc();
 
     public void create() {
-        Database.executeUpdate(
-                "CREATE TABLE IF NOT EXISTS " + name + tableDesc);
+        database.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS " + name + getTableDesc());
     }
+
+    protected abstract String getInsertTupleTemplate();
 
     protected abstract String getObjectInsertTuple(T object);
 
     public void insert(T object) {
-        Database.executeUpdate("INSERT INTO " + name + " " +
-                insertTuple + " VALUES " + getObjectInsertTuple(object));
+        database.executeUpdate("INSERT INTO " + name + " " +
+                getInsertTupleTemplate() + " VALUES " + getObjectInsertTuple(object));
     }
 
     protected <K> List<K> select(
@@ -32,7 +32,7 @@ public abstract class Table<T> {
             String orderBy,
             String limit,
             Decoder<K> decoder) {
-        return Database.executeQueryAndProcess(
+        return database.executeQueryAndProcess(
                 "SELECT " + what + " FROM " + name + " " + orderBy + " " + limit,
                 decoder);
     }

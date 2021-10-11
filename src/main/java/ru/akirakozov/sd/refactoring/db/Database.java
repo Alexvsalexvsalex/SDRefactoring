@@ -8,15 +8,26 @@ import java.util.List;
 import java.util.function.Function;
 
 public class Database {
-    private static <T> T withDatabaseConnection(Function<Connection, T> function) {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+    private final String schema = "jdbc:sqlite";
+    private final String fileName;
+
+    public Database(String fileName) {
+        this.fileName = fileName;
+    }
+
+    private String getUrl() {
+        return schema + ":" + fileName;
+    }
+
+    private <T> T withDatabaseConnection(Function<Connection, T> function) {
+        try (Connection c = DriverManager.getConnection(getUrl())) {
             return function.apply(c);
         } catch (SQLException e) {
             throw new DatabaseException("Cannot create connection", e);
         }
     }
 
-    private static <T> T withStatement(Connection connection,
+    private <T> T withStatement(Connection connection,
                                 Function<Statement, T> function) {
         try (Statement stmt = connection.createStatement()) {
             return function.apply(stmt);
@@ -25,11 +36,11 @@ public class Database {
         }
     }
 
-    private static <T> T execute(Function<Statement, T> function) {
+    private <T> T execute(Function<Statement, T> function) {
         return withDatabaseConnection(c -> withStatement(c, function));
     }
 
-    public static <T> T executeQuery(String query,
+    public <T> T executeQuery(String query,
                               Function<ResultSet, T> function) {
         return execute(
                 s -> {
@@ -42,7 +53,7 @@ public class Database {
         );
     }
 
-    public static int executeUpdate(String query) {
+    public int executeUpdate(String query) {
         return execute(
                 s -> {
                     try {
@@ -54,7 +65,7 @@ public class Database {
         );
     }
 
-    public static <T> List<T> executeQueryAndProcess(String query,
+    public <T> List<T> executeQueryAndProcess(String query,
                                            Decoder<T> decoder) {
         return executeQuery(query, resultSet -> {
             try {
