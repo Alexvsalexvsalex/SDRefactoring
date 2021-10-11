@@ -14,7 +14,7 @@ public class HtmlFormatter {
     }
 
     public String getHeadBlock() {
-        return "<head>\n" + head + "</head>";
+        return "<head>" + head + "</head>";
     }
 
     public <T> void printlnToBody(T s) {
@@ -26,13 +26,13 @@ public class HtmlFormatter {
     }
 
     public String getBodyBlock() {
-        return "<body>\n" + body + "</body>";
+        return "<body>" + body + "</body>";
     }
 
     public String getPage() {
-        return "<html>\n" +
-                getHeadBlock() + "\n" +
-                getBodyBlock() + "\n" +
+        return "<html>" +
+                getHeadBlock() +
+                getBodyBlock() +
                 "</html>";
     }
 

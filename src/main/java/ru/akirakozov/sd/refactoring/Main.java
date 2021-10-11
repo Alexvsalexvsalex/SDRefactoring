@@ -4,8 +4,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import ru.akirakozov.sd.refactoring.db.ProductTable;
-import ru.akirakozov.sd.refactoring.db.Table;
-import ru.akirakozov.sd.refactoring.domain.Product;
 import ru.akirakozov.sd.refactoring.exceptions.ServerException;
 import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
 import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
@@ -15,10 +13,18 @@ import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
  * @author akirakozov
  */
 public class Main {
-    public static void main(String[] args) {
+    public static final int PORT = 8081;
+
+    public static void main(String[] args) throws InterruptedException {
         ProductTable table = new ProductTable("test.db");
+        upServer(table).join();
+    }
+
+    // public for tests
+    public static Server upServer(ProductTable table) {
         table.create();
-        Server server = new Server(8081);
+
+        Server server = new Server(PORT);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
@@ -30,9 +36,9 @@ public class Main {
 
         try {
             server.start();
-            server.join();
         } catch (Exception e) {
             throw new ServerException("Error while starting server", e);
         }
+        return server;
     }
 }

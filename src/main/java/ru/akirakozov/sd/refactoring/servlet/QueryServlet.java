@@ -1,12 +1,14 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.db.ProductTable;
+import ru.akirakozov.sd.refactoring.domain.Product;
 import ru.akirakozov.sd.refactoring.pages.HtmlFormatter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * @author akirakozov
@@ -26,12 +28,22 @@ public class QueryServlet extends HttpServlet {
         switch (command) {
             case "max": {
                 formatter.printlnToBody("<h1>Product with max price: </h1>");
-                formatter.printlnToBody(table.getMaxPriceProduct());
+                Optional<Product> product = table.getMaxPriceProduct();
+                if (product.isPresent()) {
+                    formatter.printlnToBody(product.get().getName());
+                } else {
+                    formatter.printlnToBody("None");
+                }
                 break;
             }
             case "min": {
                 formatter.printlnToBody("<h1>Product with min price: </h1>");
-                formatter.printlnToBody(table.getMinPriceProduct());
+                Optional<Product> product = table.getMinPriceProduct();
+                if (product.isPresent()) {
+                    formatter.printlnToBody(product.get().getName());
+                } else {
+                    formatter.printlnToBody("None");
+                }
                 break;
             }
             case "sum": {

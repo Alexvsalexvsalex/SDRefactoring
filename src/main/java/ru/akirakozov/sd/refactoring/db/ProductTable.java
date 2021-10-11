@@ -3,6 +3,7 @@ package ru.akirakozov.sd.refactoring.db;
 import ru.akirakozov.sd.refactoring.domain.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ProductTable extends Table<Product> {
     public ProductTable(String file) {
@@ -18,12 +19,12 @@ public class ProductTable extends Table<Product> {
 
     @Override
     protected String getInsertTupleTemplate() {
-        return null;
+        return "(NAME, PRICE)";
     }
 
     @Override
     protected String getObjectInsertTuple(Product object) {
-        return "(" + object.getName() + ", " + object.getPrice() + ")";
+        return "(\"" + object.getName() + "\", " + object.getPrice() + ")";
     }
 
     public List<Product> selectAllOrderedByPriceDesc() {
@@ -31,14 +32,22 @@ public class ProductTable extends Table<Product> {
     }
 
     public int getSumPrice() {
-        return select("SUM(price)", "", "", Decoders.INTEGER_DECODER).get(0);
+        return getFirstOptional(select("SUM(price)", "", "", Decoders.INTEGER_DECODER)).orElse(0);
     }
 
-    public Product getMaxPriceProduct() {
-        return select("*", "ORDER BY PRICE DESC", "LIMIT 1", Decoders.PRODUCT_DECODER).get(0);
+    private <K> Optional<K> getFirstOptional(List<K> list) {
+        if (list == null || list.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(list.get(0));
+        }
     }
 
-    public Product getMinPriceProduct() {
-        return select("*", "ORDER BY PRICE", "LIMIT 1", Decoders.PRODUCT_DECODER).get(0);
+    public Optional<Product> getMaxPriceProduct() {
+        return getFirstOptional(select("*", "ORDER BY PRICE DESC", "LIMIT 1", Decoders.PRODUCT_DECODER));
+    }
+
+    public Optional<Product> getMinPriceProduct() {
+        return getFirstOptional(select("*", "ORDER BY PRICE", "LIMIT 1", Decoders.PRODUCT_DECODER));
     }
 }

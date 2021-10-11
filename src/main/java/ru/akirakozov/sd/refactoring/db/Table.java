@@ -38,6 +38,6 @@ public abstract class Table<T> {
     }
 
     public int countAll() {
-        return select("*", "", "", Decoders.INTEGER_DECODER).get(0);
+        return select("COUNT(*)", "", "", Decoders.INTEGER_DECODER).get(0);
     }
 }
