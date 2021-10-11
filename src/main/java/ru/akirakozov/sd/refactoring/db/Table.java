@@ -6,9 +6,13 @@ public abstract class Table<T> {
     protected final String name;
     private final Database database;
 
-    protected Table(String file, String name) {
-        this.database = new Database(file);
+    protected Table(Database database, String name) {
+        this.database = database;
         this.name = name;
+    }
+
+    protected Table(String file, String name) {
+        this(new Database(file), name);
     }
 
     protected abstract String getTableDesc();

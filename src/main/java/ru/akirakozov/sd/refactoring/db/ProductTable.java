@@ -10,6 +10,10 @@ public class ProductTable extends Table<Product> {
         super(file, "PRODUCT");
     }
 
+    ProductTable(Database db) {
+        super(db, "PRODUCT");
+    }
+
     @Override
     protected String getTableDesc() {
         return "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
