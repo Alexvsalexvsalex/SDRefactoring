@@ -21,14 +21,16 @@ public class ProductTable extends Table<Product> {
                 " PRICE          INT     NOT NULL)";
     }
 
-    @Override
-    protected String getInsertTupleTemplate() {
-        return "(NAME, PRICE)";
+    protected List<String> getColumnsList() {
+        return List.of(
+                "NAME",
+                "PRICE");
     }
 
-    @Override
-    protected String getObjectInsertTuple(Product object) {
-        return "(\"" + object.getName() + "\", " + object.getPrice() + ")";
+    protected List<String> extractObject(Product object) {
+        return List.of(
+                asString(object.getName()),
+                asRaw(object.getPrice()));
     }
 
     public List<Product> selectAllOrderedByPriceDesc() {

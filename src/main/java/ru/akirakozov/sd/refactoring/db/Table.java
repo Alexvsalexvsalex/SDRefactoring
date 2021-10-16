@@ -1,5 +1,7 @@
 package ru.akirakozov.sd.refactoring.db;
 
+import org.sqlite.util.StringUtils;
+
 import java.util.List;
 
 public abstract class Table<T> {
@@ -22,13 +24,33 @@ public abstract class Table<T> {
                 "CREATE TABLE IF NOT EXISTS " + name + getTableDesc());
     }
 
-    protected abstract String getInsertTupleTemplate();
+    protected String createTuple(List<String> elements) {
+        return "(" + StringUtils.join(elements, ", ") + ")";
+    }
 
-    protected abstract String getObjectInsertTuple(T object);
+    protected abstract List<String> getColumnsList();
+
+    protected abstract List<String> extractObject(T object);
+
+    private String getColumnsString() {
+        return createTuple(getColumnsList());
+    }
+
+    private String getTableRow(T object) {
+        return createTuple(extractObject(object));
+    }
+
+    protected String asString(String s) {
+        return "\"" + s + "\"";
+    }
+
+    protected <A> String asRaw(A s) {
+        return s.toString();
+    }
 
     public void insert(T object) {
         database.executeUpdate("INSERT INTO " + name + " " +
-                getInsertTupleTemplate() + " VALUES " + getObjectInsertTuple(object));
+                getColumnsString() + " VALUES " + getTableRow(object));
     }
 
     protected <K> List<K> select(
